@@ -35,6 +35,7 @@
     #pragma warning(disable:4799)
 #endif
 
+#include <cmath>
 #include <simde/x86/sse.h>
 #include <simde/x86/sse4.1.h>
 
