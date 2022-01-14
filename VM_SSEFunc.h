@@ -39,8 +39,8 @@
 #include <simde/x86/sse.h>
 #include <simde/x86/sse4.1.h>
 
-typedef __m128 v4sf;
-typedef __m128i v4si;
+typedef simde__m128 v4sf;
+typedef simde__m128i v4si;
 
 #define CPU_HAS_SIMD_INSTR	1
 #define VM_SSE_STYLE		1
@@ -99,14 +99,14 @@ template <int mask>
 static SYS_FORCE_INLINE v4sf
 vm_shuffle(const v4sf &a, const v4sf &b)
 {
-    return _mm_shuffle_ps(a, b, mask);
+    return simde_mm_shuffle_ps(a, b, mask);
 }
 
 template <int mask>
 static SYS_FORCE_INLINE v4si
 vm_shuffle(const v4si &a, const v4si &b)
 {
-    return V4SI(_mm_shuffle_ps(V4SF(a), V4SF(b), mask));
+    return V4SI(simde_mm_shuffle_ps(V4SF(a), V4SF(b), mask));
 }
 
 template <int A, int B, int C, int D, typename T>
@@ -137,10 +137,10 @@ vm_insert(const v4si v, int32 a, int n)
 {
     switch (n)
     {
-    case 0: return _mm_insert_epi32(v, a, 0);
-    case 1: return _mm_insert_epi32(v, a, 1);
-    case 2: return _mm_insert_epi32(v, a, 2);
-    case 3: return _mm_insert_epi32(v, a, 3);
+    case 0: return simde_mm_insert_epi32(v, a, 0);
+    case 1: return simde_mm_insert_epi32(v, a, 1);
+    case 2: return simde_mm_insert_epi32(v, a, 2);
+    case 3: return simde_mm_insert_epi32(v, a, 3);
     }
     return v;
 }
@@ -150,10 +150,10 @@ vm_insert(const v4sf v, float a, int n)
 {
     switch (n)
     {
-    case 0: return _mm_insert_ps(v, _mm_set_ss(a), _MM_MK_INSERTPS_NDX(0,0,0));
-    case 1: return _mm_insert_ps(v, _mm_set_ss(a), _MM_MK_INSERTPS_NDX(0,1,0));
-    case 2: return _mm_insert_ps(v, _mm_set_ss(a), _MM_MK_INSERTPS_NDX(0,2,0));
-    case 3: return _mm_insert_ps(v, _mm_set_ss(a), _MM_MK_INSERTPS_NDX(0,3,0));
+    case 0: return simde_mm_insert_ps(v, simde_mm_set_ss(a), _MM_MK_INSERTPS_NDX(0,0,0));
+    case 1: return simde_mm_insert_ps(v, simde_mm_set_ss(a), _MM_MK_INSERTPS_NDX(0,1,0));
+    case 2: return simde_mm_insert_ps(v, simde_mm_set_ss(a), _MM_MK_INSERTPS_NDX(0,2,0));
+    case 3: return simde_mm_insert_ps(v, simde_mm_set_ss(a), _MM_MK_INSERTPS_NDX(0,3,0));
     }
     return v;
 }
@@ -163,10 +163,10 @@ vm_extract(const v4si v, int n)
 {
     switch (n)
     {
-    case 0: return _mm_extract_epi32(v, 0);
-    case 1: return _mm_extract_epi32(v, 1);
-    case 2: return _mm_extract_epi32(v, 2);
-    case 3: return _mm_extract_epi32(v, 3);
+    case 0: return simde_mm_extract_epi32(v, 0);
+    case 1: return simde_mm_extract_epi32(v, 1);
+    case 2: return simde_mm_extract_epi32(v, 2);
+    case 3: return simde_mm_extract_epi32(v, 3);
     }
     return 0;
 }
@@ -177,10 +177,10 @@ vm_extract(const v4sf v, int n)
     SYS_FPRealUnionF	tmp;
     switch (n)
     {
-    case 0: tmp.ival = _mm_extract_ps(v, 0); break;
-    case 1: tmp.ival = _mm_extract_ps(v, 1); break;
-    case 2: tmp.ival = _mm_extract_ps(v, 2); break;
-    case 3: tmp.ival = _mm_extract_ps(v, 3); break;
+    case 0: tmp.ival = simde_mm_extract_ps(v, 0); break;
+    case 1: tmp.ival = simde_mm_extract_ps(v, 1); break;
+    case 2: tmp.ival = simde_mm_extract_ps(v, 2); break;
+    case 3: tmp.ival = simde_mm_extract_ps(v, 3); break;
     }
     return tmp.fval;
 }
@@ -226,7 +226,7 @@ vm_extract(const v4sf v, int n)
 static SYS_FORCE_INLINE v4sf
 vm_splats(float a)
 {
-    return _mm_set1_ps(a);
+    return simde_mm_set1_ps(a);
 }
 
 static SYS_FORCE_INLINE v4si
@@ -249,8 +249,8 @@ static SYS_FORCE_INLINE v4sf
 vm_splats(float a, float b, float c, float d)
 {
     return vm_shuffle<0,2,0,2>(
-	    vm_shuffle<0>(_mm_set_ss(a), _mm_set_ss(b)),
-	    vm_shuffle<0>(_mm_set_ss(c), _mm_set_ss(d)));
+	    vm_shuffle<0>(simde_mm_set_ss(a), simde_mm_set_ss(b)),
+	    vm_shuffle<0>(simde_mm_set_ss(c), simde_mm_set_ss(d)));
 }
 
 static SYS_FORCE_INLINE v4si
@@ -278,49 +278,49 @@ vm_splats(int32 a, int32 b, int32 c, int32 d)
 static SYS_FORCE_INLINE v4si
 vm_load(const int32 v[4])
 {
-    return V4SI(_mm_loadu_ps((const float *)v));
+    return V4SI(simde_mm_loadu_ps((const float *)v));
 }
 
 static SYS_FORCE_INLINE v4sf
 vm_load(const float v[4])
 {
-    return _mm_loadu_ps(v);
+    return simde_mm_loadu_ps(v);
 }
 
 static SYS_FORCE_INLINE void
 vm_store(float dst[4], v4sf value)
 {
-    _mm_storeu_ps(dst, value);
+    simde_mm_storeu_ps(dst, value);
 }
 
 static SYS_FORCE_INLINE v4sf
 vm_negate(v4sf a)
 {
-    return _mm_sub_ps(_mm_setzero_ps(), a);
+    return simde_mm_sub_ps(simde_mm_setzero_ps(), a);
 }
 
 static SYS_FORCE_INLINE v4sf
 vm_abs(v4sf a)
 {
-    return _mm_max_ps(a, vm_negate(a));
+    return simde_mm_max_ps(a, vm_negate(a));
 }
 
 static SYS_FORCE_INLINE v4sf
 vm_fdiv(v4sf a, v4sf b)
 {
-    return _mm_mul_ps(a, _mm_rcp_ps(b));
+    return simde_mm_mul_ps(a, simde_mm_rcp_ps(b));
 }
 
 static SYS_FORCE_INLINE v4sf
 vm_fsqrt(v4sf a)
 {
-    return _mm_rcp_ps(_mm_rsqrt_ps(a));
+    return simde_mm_rcp_ps(simde_mm_rsqrt_ps(a));
 }
 
 static SYS_FORCE_INLINE v4sf
 vm_madd(v4sf a, v4sf b, v4sf c)
 {
-    return _mm_add_ps(_mm_mul_ps(a, b), c);
+    return simde_mm_add_ps(simde_mm_mul_ps(a, b), c);
 }
 
 static const v4si	theSSETrue = vm_splats(0xFFFFFFFF);
@@ -328,7 +328,7 @@ static const v4si	theSSETrue = vm_splats(0xFFFFFFFF);
 static SYS_FORCE_INLINE bool
 vm_allbits(const v4si &a)
 {
-    return _mm_movemask_ps(V4SF(_mm_cmpeq_epi32(a, theSSETrue))) == 0xF;
+    return simde_mm_movemask_ps(V4SF(simde_mm_cmpeq_epi32(a, theSSETrue))) == 0xF;
 }
 
 
@@ -338,27 +338,27 @@ vm_allbits(const v4si &a)
 #define VM_LOAD		vm_load
 #define VM_STORE	vm_store
 
-#define VM_CMPLT(A,B)	V4SI(_mm_cmplt_ps(A,B))
-#define VM_CMPLE(A,B)	V4SI(_mm_cmple_ps(A,B))
-#define VM_CMPGT(A,B)	V4SI(_mm_cmpgt_ps(A,B))
-#define VM_CMPGE(A,B)	V4SI(_mm_cmpge_ps(A,B))
-#define VM_CMPEQ(A,B)	V4SI(_mm_cmpeq_ps(A,B))
-#define VM_CMPNE(A,B)	V4SI(_mm_cmpneq_ps(A,B))
+#define VM_CMPLT(A,B)	V4SI(simde_mm_cmplt_ps(A,B))
+#define VM_CMPLE(A,B)	V4SI(simde_mm_cmple_ps(A,B))
+#define VM_CMPGT(A,B)	V4SI(simde_mm_cmpgt_ps(A,B))
+#define VM_CMPGE(A,B)	V4SI(simde_mm_cmpge_ps(A,B))
+#define VM_CMPEQ(A,B)	V4SI(simde_mm_cmpeq_ps(A,B))
+#define VM_CMPNE(A,B)	V4SI(simde_mm_cmpneq_ps(A,B))
 
-#define VM_ICMPLT	_mm_cmplt_epi32
-#define VM_ICMPGT	_mm_cmpgt_epi32
-#define VM_ICMPEQ	_mm_cmpeq_epi32
+#define VM_ICMPLT	simde_mm_cmplt_epi32
+#define VM_ICMPGT	simde_mm_cmpgt_epi32
+#define VM_ICMPEQ	simde_mm_cmpeq_epi32
 
-#define VM_IADD		_mm_add_epi32
-#define VM_ISUB		_mm_sub_epi32
+#define VM_IADD		simde_mm_add_epi32
+#define VM_ISUB		simde_mm_sub_epi32
 
-#define VM_ADD		_mm_add_ps
-#define VM_SUB		_mm_sub_ps
-#define VM_MUL		_mm_mul_ps
-#define VM_DIV		_mm_div_ps
-#define VM_SQRT		_mm_sqrt_ps
-#define VM_ISQRT	_mm_rsqrt_ps
-#define VM_INVERT	_mm_rcp_ps
+#define VM_ADD		simde_mm_add_ps
+#define VM_SUB		simde_mm_sub_ps
+#define VM_MUL		simde_mm_mul_ps
+#define VM_DIV		simde_mm_div_ps
+#define VM_SQRT		simde_mm_sqrt_ps
+#define VM_ISQRT	simde_mm_rsqrt_ps
+#define VM_INVERT	simde_mm_rcp_ps
 #define VM_ABS		vm_abs
 
 #define VM_FDIV		vm_fdiv
@@ -366,13 +366,13 @@ vm_allbits(const v4si &a)
 #define VM_FSQRT	vm_fsqrt
 #define VM_MADD		vm_madd
 
-#define VM_MIN		_mm_min_ps
-#define VM_MAX		_mm_max_ps
+#define VM_MIN		simde_mm_min_ps
+#define VM_MAX		simde_mm_max_ps
 
-#define VM_AND		_mm_and_si128
-#define VM_ANDNOT	_mm_andnot_si128
-#define VM_OR		_mm_or_si128
-#define VM_XOR		_mm_xor_si128
+#define VM_AND		simde_mm_and_si128
+#define VM_ANDNOT	simde_mm_andnot_si128
+#define VM_OR		simde_mm_or_si128
+#define VM_XOR		simde_mm_xor_si128
 
 #define VM_ALLBITS	vm_allbits
 
@@ -385,19 +385,19 @@ vm_allbits(const v4si &a)
 #define VM_SSE_ROUND_DOWN	0x2000
 #define VM_SSE_ROUND_NEAR	0x0000
 
-#define GETROUND()	(_mm_getcsr()&VM_SSE_ROUND_MASK)
-#define SETROUND(x)	(_mm_setcsr(x|(_mm_getcsr()&~VM_SSE_ROUND_MASK)))
+#define GETROUND()	(simde_mm_getcsr()&VM_SSE_ROUND_MASK)
+#define SETROUND(x)	(simde_mm_setcsr(x|(simde_mm_getcsr()&~VM_SSE_ROUND_MASK)))
 
 // The P functions must be invoked before FLOOR, the E functions invoked
 // afterwards to reset the state.
 
 #define VM_P_FLOOR()	uint rounding = GETROUND(); \
 			    SETROUND(VM_SSE_ROUND_DOWN);
-#define VM_FLOOR	_mm_cvtps_epi32
-#define VM_INT		_mm_cvttps_epi32
+#define VM_FLOOR	simde_mm_cvtps_epi32
+#define VM_INT		simde_mm_cvttps_epi32
 #define VM_E_FLOOR()	SETROUND(rounding);
 
 // Float to integer conversion
-#define VM_IFLOAT	_mm_cvtepi32_ps
+#define VM_IFLOAT	simde_mm_cvtepi32_ps
 
 #endif

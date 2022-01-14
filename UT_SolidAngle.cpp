@@ -765,7 +765,7 @@ T UT_SolidAngle<T, S>::computeSolidAngle(const UT_Vector3T<T> &query_point, cons
             // TODO: Is there a way to estimate the error?
             static_assert((std::is_same<typename BoxData::Type,v4uf>::value), "FIXME: Implement support for other tuple types!");
             v4uu descend_mask = (qlength2 <= maxP2*myAccuracyScale2);
-            uint descend_bitmask = _mm_movemask_ps(V4SF(descend_mask.vector));
+            uint descend_bitmask = simde_mm_movemask_ps(V4SF(descend_mask.vector));
             constexpr uint allchildbits = ((uint(1)<<BVH_N)-1);
             if (descend_bitmask == allchildbits)
             {
@@ -824,7 +824,7 @@ T UT_SolidAngle<T, S>::computeSolidAngle(const UT_Vector3T<T> &query_point, cons
             // small bounding box, it needs to descend.
             const v4uu mask = Omega_approx.isFinite() & ~descend_mask;
             Omega_approx = Omega_approx & mask;
-            descend_bitmask = (~_mm_movemask_ps(V4SF(mask.vector))) & allchildbits;
+            descend_bitmask = (~simde_mm_movemask_ps(V4SF(mask.vector))) & allchildbits;
 
             T sum = Omega_approx[0];
             for (int i = 1; i < BVH_N; ++i)
@@ -1317,7 +1317,7 @@ T UT_SubtendedAngle<T, S>::computeAngle(const UT_Vector2T<T> &query_point, const
             // TODO: Is there a way to estimate the error?
             static_assert((std::is_same<typename BoxData::Type,v4uf>::value), "FIXME: Implement support for other tuple types!");
             v4uu descend_mask = (qlength2 <= maxP2*myAccuracyScale2);
-            uint descend_bitmask = _mm_movemask_ps(V4SF(descend_mask.vector));
+            uint descend_bitmask = simde_mm_movemask_ps(V4SF(descend_mask.vector));
             constexpr uint allchildbits = ((uint(1)<<BVH_N)-1);
             if (descend_bitmask == allchildbits)
             {
@@ -1367,7 +1367,7 @@ T UT_SubtendedAngle<T, S>::computeAngle(const UT_Vector2T<T> &query_point, const
             // small bounding box, it needs to descend.
             const v4uu mask = Omega_approx.isFinite() & ~descend_mask;
             Omega_approx = Omega_approx & mask;
-            descend_bitmask = (~_mm_movemask_ps(V4SF(mask.vector))) & allchildbits;
+            descend_bitmask = (~simde_mm_movemask_ps(V4SF(mask.vector))) & allchildbits;
 
             T sum = Omega_approx[0];
             for (int i = 1; i < BVH_N; ++i)
